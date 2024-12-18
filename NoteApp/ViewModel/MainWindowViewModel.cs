@@ -121,6 +121,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (result == MessageBoxResult.OK)
             {
                 Notes.Remove(SelectedNote);
+                FilteredNotes.Remove(SelectedNote);
                 _projectService.SaveProject(Notes);
                 SelectedNote = null;
             }
