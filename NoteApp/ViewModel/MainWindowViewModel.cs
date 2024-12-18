@@ -11,45 +11,51 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly IProjectService _projectService;
 
     [ObservableProperty] private ObservableCollection<Note> _notes;
-    
-    [ObservableProperty] private ObservableCollection<Note> _filteredNotes;
 
     [ObservableProperty] private Note _selectedNote;
+    
+    [ObservableProperty]
+    private string _selectedCategory = "All";
 
-    [ObservableProperty] private NoteCategory _selectedCategory;
+    private ObservableCollection<Note> _filteredNotes;
+    public ObservableCollection<Note> FilteredNotes
+    {
+        get => _filteredNotes;
+        private set
+        {
+            SetProperty(ref _filteredNotes, value);
+            OnPropertyChanged(nameof(FilteredNotes));
+        }
+    }
 
-    [ObservableProperty] private ObservableCollection<NoteCategory> _categories;
+    public IEnumerable<string> Categories => 
+        new[] { "All" }.Concat(Enum.GetNames(typeof(NoteCategory)));
 
     public MainWindowViewModel(IProjectService projectService = null)
     {
         _projectService = projectService ?? new JsonProjectService();
-        _categories = new ObservableCollection<NoteCategory>(
-            Enum.GetValues(typeof(NoteCategory)).Cast<NoteCategory>());
         Notes = new ObservableCollection<Note>(_projectService.LoadProject());
-        _filteredNotes = new ObservableCollection<Note>(_notes);
+        FilteredNotes = new ObservableCollection<Note>(Notes);
+    }
+    
+    partial void OnSelectedCategoryChanged(string value)
+    {
+        UpdateFilteredNotes();
     }
 
-    partial void OnSelectedCategoryChanged(NoteCategory value)
+    private void UpdateFilteredNotes()
     {
-        if (value != NoteCategory.All)
+        if (SelectedCategory == "All")
         {
-            _filteredNotes.Clear();
-            foreach (var category in _notes.Where(n => n.Category == value))
-            {
-                _filteredNotes.Add(category);
-            }
+            FilteredNotes = new ObservableCollection<Note>(Notes);
         }
         else
         {
-            _filteredNotes.Clear();
-            foreach (var category in _notes)
-            {
-                _filteredNotes.Add(category);
-            }
+            FilteredNotes = new ObservableCollection<Note>(Notes.Where(n => n.Category.ToString() == SelectedCategory));
         }
     }
 
-[RelayCommand]
+        [RelayCommand]
         private void AddNote()
         {
             var editViewModel = new NoteEditViewModel();
