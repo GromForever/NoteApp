@@ -22,6 +22,22 @@ public partial class Note : ObservableObject, ICloneable
         LastModifiedTime = CreationTime;
     }
 
+    public Note(string title, NoteCategory category, string text)
+    {
+        Title = title;
+        Category = category;
+        Text = text;
+        CreationTime = DateTime.Now;
+        LastModifiedTime = CreationTime;
+    }
+    
+    public Note(string title)
+    {
+        Title = title;
+        CreationTime = DateTime.Now;
+        LastModifiedTime = CreationTime;
+    }
+
     partial void OnTitleChanged(string value)
     {
         if (value.Length > 50)
