@@ -64,6 +64,7 @@ public partial class MainWindowViewModel : ObservableObject
             editViewModel.OnSuccessfulSave += (newNote) =>
             {
                 Notes.Add(newNote);
+                FilteredNotes.Add(newNote);
                 SelectedNote = newNote;
                 _projectService.SaveProject(Notes);
                 editWindow.DialogResult = true;
@@ -91,6 +92,7 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 int index = Notes.IndexOf(SelectedNote);
                 Notes[index] = updatedNote;
+                FilteredNotes[index] = updatedNote;
                 SelectedNote = updatedNote;
                 _projectService.SaveProject(Notes);
                 editWindow.DialogResult = true;
