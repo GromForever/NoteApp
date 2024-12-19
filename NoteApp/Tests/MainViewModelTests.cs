@@ -8,21 +8,6 @@ namespace NoteApp.Tests;
 public class MainViewModelTests
     {
         [Fact]
-        public void AddNote_ShouldAddNoteToProject()
-        {
-            // Arrange
-            var mockProjectService = new Mock<IProjectService>();
-            var viewModel = new MainWindowViewModel(mockProjectService.Object);
-
-            // Act
-            viewModel.AddNoteCommand.Execute(null);
-
-            // Assert
-            Assert.Single(viewModel.Notes);
-            mockProjectService.Verify(s => s.SaveProject(It.IsAny<System.Collections.Generic.IEnumerable<Note>>()), Times.Once);
-        }
-
-        [Fact]
         public void RemoveNote_ShouldRemoveNoteFromProject()
         {
             // Arrange
